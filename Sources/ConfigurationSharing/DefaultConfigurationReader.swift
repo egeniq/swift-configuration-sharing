@@ -20,6 +20,33 @@ public protocol Refreshable: Sendable {
 /// the same instance. If services are provided, they are automatically managed in a
 /// ServiceGroup for lifecycle management.
 ///
+/// ## Platform Requirements
+///
+/// This library declares a minimum deployment target of **iOS 15 / macOS 12 / tvOS 15 /
+/// watchOS 8 / visionOS 1**. The library's own code is fully compatible with these targets:
+/// - Swift Concurrency (`async`/`await`, `actor`, `Task`) — available since iOS 15, which
+///   sets the practical floor for this library.
+/// - `ServiceGroup` from swift-service-lifecycle — fully compatible with the iOS 15 minimum.
+/// - `@SharedReader` from swift-sharing — fully compatible with the iOS 15 minimum.
+///
+/// ### Known limitation: `swift-configuration` dependency
+///
+/// The `swift-configuration` package (Apple, v1.x) internally uses `Synchronization.Mutex`,
+/// which requires **iOS 18 / macOS 15 / tvOS 18 / watchOS 11** on Apple platforms.
+/// Until upstream provides a version that backports that synchronization primitive (e.g., via
+/// `NSLock` or `os_unfair_lock`), apps targeting iOS 15–17 will receive a compiler error when
+/// building for Apple platforms, even though the rest of this library is compatible.
+///
+/// When a version of `swift-configuration` that supports iOS 15+ becomes available, simply
+/// updating the dependency pin in `Package.resolved` will be sufficient; no other code changes
+/// are required in this library.
+///
+/// ### Features that degrade gracefully
+///
+/// - **Service lifecycle management** via `ServiceGroup` already uses `#available` guards
+///   internally for newer OS optimisations and works without changes within the iOS 15 minimum.
+/// - All `@SharedReader`/`@Dependency` integration is compatible with the iOS 15 minimum.
+///
 /// Example usage:
 /// ```swift
 /// @main
