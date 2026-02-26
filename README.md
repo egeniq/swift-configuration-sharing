@@ -6,6 +6,25 @@ A module that integrates Swift Configuration with Swift Sharing, enabling reacti
 
 ConfigurationSharing provides a `ConfigurationKey` that conforms to Swift Sharing's `SharedReaderKey` protocol, allowing you to use configuration values with the `@SharedReader` property wrapper for reactive, observable configuration management.
 
+## Platform Requirements
+
+| Platform | Minimum Version |
+|----------|-----------------|
+| iOS      | 15.0            |
+| macOS    | 12.0            |
+| tvOS     | 15.0            |
+| watchOS  | 8.0             |
+| visionOS | 1.0             |
+
+> **Note:** This library's own code is fully compatible with the targets listed above. However,
+> the upstream `swift-configuration` dependency (v1.x) internally uses `Synchronization.Mutex`,
+> which requires **iOS 18 / macOS 15** on Apple platforms. Until Apple ships a version of
+> `swift-configuration` that backports to iOS 15 (e.g. using `NSLock` or `os_unfair_lock`),
+> apps deploying to iOS 15–17 will receive a compiler error when building for Apple platforms.
+> Swift Concurrency sets the practical floor at iOS 15; service lifecycle management via
+> `ServiceGroup` and `@SharedReader` / `@Dependency` integration are both fully compatible
+> with the iOS 15 minimum and require no additional guards.
+
 ## Features
 
 - **Reactive Configuration**: Use `@SharedReader` to automatically observe configuration changes via `watchSnapshot`
